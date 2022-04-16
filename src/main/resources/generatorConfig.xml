@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--
+        targetRuntime：执行生成逆向工程的版本
+            MyBatis3Simple：生成基本的增删改查
+            MyBatis3：生成带条件的增删改查
+     -->
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!-- 注释管理 -->
+        <commentGenerator>
+            <!-- 是否删除所有注释 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!-- 数据库连接 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql:///db_students?useSSL=false&amp;useServerPrepStmts=true&amp;characterEncoding=UTF-8"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <!-- JavaBean生成策略 -->
+        <javaModelGenerator targetPackage="com.ynnz.entity" targetProject="src/main/java">
+            <!-- 是否使用子包 -->
+            <property name="enableSubPackages" value="true"/>
+            <!-- 是否去除字符串前后的空格 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- SQL映射文件生成策略 -->
+        <sqlMapGenerator targetPackage="com.ynnz.mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!-- 接口文件生成策略 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.ynnz.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!-- 需要生成的数据库表 -->
+        <table tableName="student" domainObjectName="Student"></table>
+    </context>
+</generatorConfiguration>

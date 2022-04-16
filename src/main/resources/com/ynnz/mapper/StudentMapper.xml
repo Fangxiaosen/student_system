@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ynnz.mapper.StudentMapper">
+    <resultMap id="BaseResultMap" type="com.ynnz.entity.Student">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="submission_time" property="submissionTime" jdbcType="TIMESTAMP"/>
+        <result column="ip" property="ip" jdbcType="VARCHAR"/>
+        <result column="review_time" property="reviewTime" jdbcType="TIMESTAMP"/>
+        <result column="reviewer" property="reviewer" jdbcType="VARCHAR"/>
+        <result column="review_ip" property="reviewIp" jdbcType="VARCHAR"/>
+        <result column="score" property="score" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , name, state, submission_time, ip, review_time, reviewer, review_ip, score
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ynnz.entity.StudentExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from student
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from student
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from student
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.ynnz.entity.StudentExample">
+        delete from student
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ynnz.entity.Student">
+        insert into student (id, name, state,
+                             submission_time, ip, review_time,
+                             reviewer, review_ip, score)
+        values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},
+                #{submissionTime,jdbcType=TIMESTAMP}, #{ip,jdbcType=VARCHAR}, #{reviewTime,jdbcType=TIMESTAMP},
+                #{reviewer,jdbcType=VARCHAR}, #{reviewIp,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ynnz.entity.Student">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="submissionTime != null">
+                submission_time,
+            </if>
+            <if test="ip != null">
+                ip,
+            </if>
+            <if test="reviewTime != null">
+                review_time,
+            </if>
+            <if test="reviewer != null">
+                reviewer,
+            </if>
+            <if test="reviewIp != null">
+                review_ip,
+            </if>
+            <if test="score != null">
+                score,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="submissionTime != null">
+                #{submissionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewTime != null">
+                #{reviewTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reviewer != null">
+                #{reviewer,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewIp != null">
+                #{reviewIp,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                #{score,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ynnz.entity.StudentExample" resultType="java.lang.Integer">
+        select count(*) from student
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+
+    <select id="QueryStudent" resultMap="BaseResultMap">
+        select * from student LIMIT #{startindex},#{handleSizeChange}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update student
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.name != null">
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.state != null">
+                state = #{record.state,jdbcType=VARCHAR},
+            </if>
+            <if test="record.submissionTime != null">
+                submission_time = #{record.submissionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.ip != null">
+                ip = #{record.ip,jdbcType=VARCHAR},
+            </if>
+            <if test="record.reviewTime != null">
+                review_time = #{record.reviewTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.reviewer != null">
+                reviewer = #{record.reviewer,jdbcType=VARCHAR},
+            </if>
+            <if test="record.reviewIp != null">
+                review_ip = #{record.reviewIp,jdbcType=VARCHAR},
+            </if>
+            <if test="record.score != null">
+                score = #{record.score,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update student
+        set id = #{record.id,jdbcType=VARCHAR},
+        name = #{record.name,jdbcType=VARCHAR},
+        state = #{record.state,jdbcType=VARCHAR},
+        submission_time = #{record.submissionTime,jdbcType=TIMESTAMP},
+        ip = #{record.ip,jdbcType=VARCHAR},
+        review_time = #{record.reviewTime,jdbcType=TIMESTAMP},
+        reviewer = #{record.reviewer,jdbcType=VARCHAR},
+        review_ip = #{record.reviewIp,jdbcType=VARCHAR},
+        score = #{record.score,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ynnz.entity.Student">
+        update student
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="submissionTime != null">
+                submission_time = #{submissionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewTime != null">
+                review_time = #{reviewTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reviewer != null">
+                reviewer = #{reviewer,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewIp != null">
+                review_ip = #{reviewIp,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                score = #{score,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ynnz.entity.Student">
+        update student
+        set name            = #{name,jdbcType=VARCHAR},
+            state           = #{state,jdbcType=VARCHAR},
+            submission_time = #{submissionTime,jdbcType=TIMESTAMP},
+            ip              = #{ip,jdbcType=VARCHAR},
+            review_time     = #{reviewTime,jdbcType=TIMESTAMP},
+            reviewer        = #{reviewer,jdbcType=VARCHAR},
+            review_ip       = #{reviewIp,jdbcType=VARCHAR},
+            score           = #{score,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateStudent">
+        update student
+        set state=#{state},
+            review_time=#{reviewTime},
+            reviewer=#{reviewer},
+            review_ip=#{reviewIp},
+            score=#{score}
+        where id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style type="text/css">
+        #tabledisplay {
+            margin: 0px auto;
+            width: 1200px;
+            /*border: 1px solid red;*/
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="tabledisplay">
+        <template>
+            <el-table :data="tableData" style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
+                <el-table-column prop="name" label="姓名">
+                </el-table-column>
+                <el-table-column prop="id" label="学号/工号" sortable width="120">
+                </el-table-column>
+                <el-table-column prop="state" label="状态">
+                </el-table-column>
+                <el-table-column prop="submissionTime" label="提交时间" sortable width="180">
+                </el-table-column>
+                <el-table-column prop="ip" label="IP">
+                </el-table-column>
+                <el-table-column prop="reviewTime" label="批阅时间" width="180">
+                </el-table-column>
+                <el-table-column prop="reviewer" label="阅卷人">
+                </el-table-column>
+                <el-table-column prop="reviewIp" label="批阅IP">
+                </el-table-column>
+                <el-table-column prop="score" label="成绩" sortable width="80">
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">批阅
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+        <div class="block">
+            <!--            <span class="demonstration">完整功能</span>-->
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                           :current-page="currentPage4" :page-sizes="[10,20,30,40]" :page-size="100"
+                           layout="total, sizes, prev, pager, next, jumper" :total=this.total>
+            </el-pagination>
+        </div>
+        <el-dialog
+                title="成绩"
+                :visible.sync="centerDialogVisible"
+                width="30%"
+                center>
+            <span>需要注意的是内容是默认不居中的</span>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="centerDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+  </span>
+        </el-dialog>
+        <!--页面加载动画-->
+        <div @click="openFullScreen1" v-loading.fullscreen.lock="fullscreenLoading"></div>
+    </div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="js/vue.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                tableData: [],
+                centerDialogVisible: false,
+                fullscreenLoading: false,
+                currentPage4: 1,
+                //初始索引
+                startindex: 0,
+                handleSizeChanges: 10,
+                total: 100
+            }
+        },
+        //加载时调用查询方法
+        mounted() {
+            this.querystudent()
+        },
+        methods: {
+            formatter(row, column) {
+                return row.address;
+            },
+            //加载信息
+            querystudent(startindex, handleSizeChanges) {
+                //发送异步请求
+                var _this = this;
+                this.openFullScreen1()
+                axios({
+                    method: "get",
+                    url: "/students_system/queryStudent?startindex=" + _this.startindex + "&handleSizeChange=" + _this.handleSizeChanges
+                }).then(resp => {
+                    _this.tableData = resp.data;
+                }),
+                    axios({
+                        method: "get",
+                        url: "/students_system/queryStudentTotal"
+                    }).then(resp => {
+                        _this.total = resp.data.length;
+                    })
+            },
+            //成绩批阅
+            open(id) {
+                this.$prompt('请输入成绩', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^(?:0|[1-9][0-9]?|100)$/,
+                    inputErrorMessage: '成绩格式不正确'
+                }).then(({value}) => {
+                    var _this = this;
+                    console.log("nihao")
+                    axios({
+                        method: "get",
+                        url: "/students_system/updateReview?id=" + id + "&score=" + value
+                        // data:_this.id,value
+                    }).then(resp => {
+                        if (resp.data == "success") {
+                            _this.querystudent()
+                            _this.$message({
+                                type: 'success',
+                                message: '成绩是: ' + value,
+                            })
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });
+                });
+            },
+            //加载全屏动画
+            openFullScreen1() {
+                this.fullscreenLoading = true;
+                setTimeout(() => {
+                    this.fullscreenLoading = false;
+                }, 1000);
+            },
+            //页码
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`)
+                this.handleSizeChanges = val,
+                    console.log(`每页 ${this.handleSizeChange} 条`),
+                    this.querystudent(this.startindex, this.handleSizeChanges)
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`),
+                    this.startindex = this.handleSizeChanges * (val - 1),
+                    this.querystudent(this.startindex, this.handleSizeChanges)
+            },
+            handleEdit(index, row) {
+                this.open(row.id),
+                    console.log(index, row.id);
+            }
+        }
+    })
+</script>
+</html>
